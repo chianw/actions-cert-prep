@@ -6,7 +6,7 @@ permissions:
   id-token: write
   contents: read
 jobs:
-  build-and-deploy:
+  oidc-login:
     runs-on: ubuntu-latest
     steps:
       - name: Azure login
@@ -23,9 +23,10 @@ jobs:
           azcliversion: latest
           inlineScript: |
             az account show
-    
-      - name: Example of using environment secrets
-        env:
-          PROD_SECRET1: ${{ secrets.PROD_SECRET2 }}
-        run: |
-          echo "The production secret is $PROD_SECRET1"
+
+  access-environment-secrets:
+    runs-on: ubuntu-latest
+    environment: prod
+    steps:
+      - name: Print prod environment secret
+        run: echo "${{ secrets.PROD_SECRET }}"
