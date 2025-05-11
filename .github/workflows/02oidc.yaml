@@ -10,7 +10,8 @@ permissions:
 # this is available to all jobs in the workflow
 # and can be used to pass information  
 env:
-  MY_ENV: 'prod'
+  MY_PROD_ENV: 'prod'
+  MY_DEV_ENV: 'dev'  
   
 jobs:
   oidc-login:
@@ -31,9 +32,16 @@ jobs:
           inlineScript: |
             az account show
 
-  access-environment-secrets:
+  access-prod-environment-secrets:
     runs-on: ubuntu-latest
     environment: prod
     steps:
-      - name: Print ${{ env.MY_ENV }} environment secret
+      - name: Print ${{ env.MY_PROD_ENV }} environment secret
         run: echo "${{ secrets.PROD_SECRET }}"
+
+  access-dev-environment-secrets:
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:        
+      - name: Print ${{ env.MY_DEV_ENV }} environment secret
+        run: echo "${{ secrets.DEV_SECRET }}"        
