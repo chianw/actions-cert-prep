@@ -26,6 +26,6 @@ jobs:
     
       - name: Example of using environment secrets
         env:
-          PROD_SECRET1: ${{ secrets.PROD_SECRET }}
+          PROD_SECRET1: ${{ secrets.PROD_SECRET2 }}
         run: |
           echo "The production secret is $PROD_SECRET1"
