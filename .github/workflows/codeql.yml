@@ -1,26 +1,35 @@
-name: Use CodeQL to scan for vulnerabilities
+name: "CodeQL"
+
 on:
   workflow_dispatch:
 
-permissions:
-  id-token: write
-  contents: read
-
 jobs:
-  run-codeql:
+  analyze:
+    name: Analyze
     runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      actions: read
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [python]
+
+    # Specify the container in which actions will run
+    container:
+      image: codeql-container:latest
+
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Set up CodeQL
-        uses: github/codeql-action/setup@v2
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
         with:
-          languages: python
-
-      - name: Run CodeQL analysis
-        uses: github/codeql-action/analyze@v2
-        with:
-          category: security
-          output: codeql-results.sarif
-          sarif_file: codeql-results.sarif    
+          languages: ${{ matrix.language }}
+      - name: Build
+        run: |
+          ./configure
+          make
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
